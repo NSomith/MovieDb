@@ -56,7 +56,7 @@ class _MovieDialogState extends State<MovieDialog> {
               SizedBox(height: 8),
               buildName(),
               SizedBox(height: 8),
-              buildAmount(),
+              buildDesc(),
               SizedBox(height: 8),
               isEditing ? showimg() : pickImage()
             ],
@@ -80,14 +80,14 @@ class _MovieDialogState extends State<MovieDialog> {
             name != null && name.isEmpty ? 'Enter a name' : null,
       );
 
-  Widget buildAmount() => TextFormField(
+  Widget buildDesc() => TextFormField(
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Enter Description',
         ),
         keyboardType: TextInputType.number,
         validator: (name) =>
-            name != null && name.isEmpty ? 'Enter a desc' : null,
+            name != null && name.isEmpty ? 'Enter a description' : null,
         controller: desController,
       );
   showimg() {
@@ -156,7 +156,7 @@ class _MovieDialogState extends State<MovieDialog> {
           final name = nameController.text;
           final desc = desController.text;
           final img = imgsrc.readAsBytesSync();
-
+          if(img.isNotEmpty)
           widget.onClickedDone(name, desc, img);
 
           Navigator.of(context).pop();

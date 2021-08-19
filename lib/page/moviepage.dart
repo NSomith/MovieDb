@@ -24,15 +24,15 @@ class _MoviePageState extends State<MoviePage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('Hive Expense Tracker'),
+          title: Text('Movies'),
           centerTitle: true,
         ),
         body: ValueListenableBuilder<Box<MovieDb>>(
           valueListenable: Boxes.getMovieDb().listenable(),
           builder: (context, box, _) {
-            final transactions = box.values.toList().cast<MovieDb>();
+            final movieslist = box.values.toList().cast<MovieDb>();
 
-            return buildContent(transactions);
+            return buildContent(movieslist);
           },
         ),
         floatingActionButton: FloatingActionButton(
@@ -46,11 +46,11 @@ class _MoviePageState extends State<MoviePage> {
         ),
       );
 
-  Widget buildContent(List<MovieDb> transactions) {
-    if (transactions.isEmpty) {
+  Widget buildContent(List<MovieDb> movieslist) {
+    if (movieslist.isEmpty) {
       return Center(
         child: Text(
-          'No expenses yet!',
+          'No saved movies yet!',
           style: TextStyle(fontSize: 24),
         ),
       );
@@ -61,9 +61,9 @@ class _MoviePageState extends State<MoviePage> {
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.all(8),
-              itemCount: transactions.length,
+              itemCount: movieslist.length,
               itemBuilder: (BuildContext context, int index) {
-                final transaction = transactions[index];
+                final transaction = movieslist[index];
 
                 return buildTransaction(context, transaction);
               },
@@ -76,28 +76,28 @@ class _MoviePageState extends State<MoviePage> {
 
   Widget buildTransaction(
     BuildContext context,
-    MovieDb transaction,
+    MovieDb moviedb,
   ) {
-    print(transaction.img);
+    print(moviedb.img);
     return Card(
       color: Colors.white,
       child: ExpansionTile(
-        leading: Image.memory(transaction.img),
-        subtitle: Text(transaction.des),
+        leading: Image.memory(moviedb.img),
+        subtitle: Text(moviedb.des),
         tilePadding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         title: Text(
-          transaction.name,
+          moviedb.name,
           maxLines: 2,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         children: [
-          buildButtons(context, transaction),
+          buildButtons(context, moviedb),
         ],
       ),
     );
   }
 
-  Widget buildButtons(BuildContext context, MovieDb transaction) => Row(
+  Widget buildButtons(BuildContext context, MovieDb moviedb) => Row(
         children: [
           Expanded(
             child: TextButton.icon(
@@ -106,9 +106,9 @@ class _MoviePageState extends State<MoviePage> {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => MovieDialog(
-                    moviedb: transaction,
+                    moviedb: moviedb,
                     onClickedDone: (name, des, file) =>
-                        editTransaction(transaction, name, des, file),
+                        editTransaction(moviedb, name, des, file),
                   ),
                 ),
               ),
@@ -118,7 +118,7 @@ class _MoviePageState extends State<MoviePage> {
             child: TextButton.icon(
               label: Text('Delete'),
               icon: Icon(Icons.delete),
-              onPressed: () => deleteTransaction(transaction),
+              onPressed: () => deleteTransaction(moviedb),
             ),
           )
         ],
@@ -135,11 +135,11 @@ class _MoviePageState extends State<MoviePage> {
   }
 
   void editTransaction(
-      MovieDb transaction, String name, String des, Uint8List file) {
-    transaction.name = name;
-    transaction.des = des;
-    transaction.img = file;
-    transaction.save();
+      MovieDb moviedb, String name, String des, Uint8List imgbyte) {
+    moviedb.name = name;
+    moviedb.des = des;
+    moviedb.img = imgbyte;
+    moviedb.save();
   }
 
   void deleteTransaction(MovieDb transaction) {
